@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 260" role="img" aria-label="MaDube Books logo">
+  <!-- Placeholder zebra-reading-a-book logo. Replace this file with your real logo (keep the name assets/logo.svg or update the <img src> in the HTML). -->
+  <circle cx="130" cy="130" r="120" fill="#1A1A1A"/>
+  <!-- zebra head -->
+  <path d="M70 95 q30 -55 95 -35 q40 15 35 55 q-3 22 -25 30 l-8 -18 q14 -6 15 -18 q2 -20 -22 -28 q-42 -12 -68 25 z" fill="#F7F3EC"/>
+  <!-- ears -->
+  <path d="M150 55 l22 -22 l6 26 z" fill="#F7F3EC"/>
+  <path d="M172 60 l24 -14 l-2 24 z" fill="#F7F3EC"/>
+  <!-- stripes -->
+  <g stroke="#1A1A1A" stroke-width="6" fill="none" stroke-linecap="round">
+    <path d="M92 78 q10 -14 26 -18"/>
+    <path d="M104 66 q12 -12 30 -12"/>
+    <path d="M120 60 q16 -8 34 -2"/>
+  </g>
+  <!-- snout -->
+  <ellipse cx="86" cy="132" rx="20" ry="16" fill="#F7F3EC"/>
+  <circle cx="80" cy="130" r="4" fill="#1A1A1A"/>
+  <!-- open red book -->
+  <path d="M40 150 q45 -22 90 0 q45 -22 90 0 l0 62 q-45 -18 -90 0 q-45 -18 -90 0 z" fill="#D62828"/>
+  <path d="M130 150 l0 62" stroke="#A81E1E" stroke-width="4"/>
+  <g stroke="#F7C9C9" stroke-width="3" opacity="0.7">
+    <path d="M60 168 q30 -10 60 2"/>
+    <path d="M60 182 q30 -10 60 2"/>
+    <path d="M140 170 q30 -12 60 -2"/>
+    <path d="M140 184 q30 -12 60 -2"/>
+  </g>
+</svg>
