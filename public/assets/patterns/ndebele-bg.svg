@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="480" viewBox="0 0 240 480">
+  <defs>
+    <g id="bigMotif">
+      <!-- outer stepped frame -->
+      <path d="M4 4 h44 l0 14 h-14 l0 12 h-16 l0 -12 h-14 z" fill="#EFE3D9"/>
+      <path d="M116 4 h-44 l0 14 h14 l0 12 h16 l0 -12 h14 z" fill="#EFE3D9"/>
+      <!-- upper chevron wings -->
+      <path d="M8 34 l24 -18 l24 18 l-24 18 z" fill="#EFE3D9"/>
+      <path d="M112 34 l-24 -18 l-24 18 l24 18 z" fill="#EFE3D9"/>
+      <!-- central diamond, stepped -->
+      <path d="M60 20 l34 40 l-34 40 l-34 -40 z" fill="#FFFFFF"/>
+      <path d="M60 26 l28 34 l-28 34 l-28 -34 z" fill="none" stroke="#EFE3D9" stroke-width="5"/>
+      <!-- lower teeth -->
+      <path d="M30 96 l14 -14 l14 14 l-14 14 z" fill="#EFE3D9"/>
+      <path d="M90 96 l-14 -14 l-14 14 l14 14 z" fill="#EFE3D9"/>
+      <!-- base hooks -->
+      <path d="M6 112 h20 l0 -12 h10 l0 20 h-30 z" fill="#EFE3D9"/>
+      <path d="M114 112 h-20 l0 -12 h-10 l0 20 h30 z" fill="#EFE3D9"/>
+    </g>
+    <g id="arrowMotif">
+      <path d="M6 4 h34 l-18 18 l18 18 h-34 z" fill="#EFE3D9"/>
+      <path d="M114 4 h-34 l18 18 l-18 18 h34 z" fill="#EFE3D9"/>
+      <path d="M48 4 h24 l-12 18 l12 18 h-24 l12 -18 z" fill="#EFE3D9"/>
+      <path d="M6 46 h48 l-14 14 h-34 z" fill="#EFE3D9"/>
+      <path d="M114 46 h-48 l14 14 h34 z" fill="#EFE3D9"/>
+    </g>
+  </defs>
+
+  <rect width="240" height="480" fill="#F6F0EA"/>
+
+  <!-- top arrow band -->
+  <rect y="0" width="240" height="66" fill="#F3EAE2"/>
+  <use href="#arrowMotif" x="0" y="2"/>
+  <use href="#arrowMotif" x="120" y="2"/>
+
+  <!-- plain stripe zone -->
+  <rect y="66" width="240" height="12" fill="#EFE3D9"/>
+  <rect y="78" width="240" height="10" fill="#FBF7F3"/>
+  <rect y="88" width="240" height="14" fill="#EFE3D9"/>
+  <rect y="102" width="240" height="10" fill="#FBF7F3"/>
+
+  <!-- first diamond band -->
+  <rect y="112" width="240" height="126" fill="#F3EAE2"/>
+  <use href="#bigMotif" x="0" y="114"/>
+  <use href="#bigMotif" x="120" y="114"/>
+
+  <!-- small triangle strip -->
+  <rect y="238" width="240" height="24" fill="#F3EAE2"/>
+  <g fill="#EFE3D9">
+    <path d="M0 240 h20 l-10 20 z M20 240 l10 20 h-10 z"/>
+    <path d="M40 240 h20 l-10 20 z M60 240 l10 20 h-10 z"/>
+    <path d="M80 240 h20 l-10 20 z M100 240 l10 20 h-10 z"/>
+    <path d="M120 240 h20 l-10 20 z M140 240 l10 20 h-10 z"/>
+    <path d="M160 240 h20 l-10 20 z M180 240 l10 20 h-10 z"/>
+    <path d="M200 240 h20 l-10 20 z M220 240 l10 20 h-10 z"/>
+  </g>
+
+  <!-- second diamond band -->
+  <rect y="262" width="240" height="126" fill="#F3EAE2"/>
+  <use href="#bigMotif" x="0" y="264"/>
+  <use href="#bigMotif" x="120" y="264"/>
+
+  <!-- lower stripe zone -->
+  <rect y="388" width="240" height="10" fill="#FBF7F3"/>
+  <rect y="398" width="240" height="14" fill="#EFE3D9"/>
+  <rect y="412" width="240" height="10" fill="#FBF7F3"/>
+
+  <!-- bottom arrow band, mirrored -->
+  <rect y="422" width="240" height="58" fill="#F3EAE2"/>
+  <g transform="translate(0,480) scale(1,-1)">
+    <use href="#arrowMotif" x="0" y="0"/>
+    <use href="#arrowMotif" x="120" y="0"/>
+  </g>
+</svg>

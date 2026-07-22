@@ -1,0 +1,45 @@
+rules_version = '2';
+
+// MaDube Books - Firestore security rules
+// Public visitors can READ the catalogue and post orders/messages.
+// Only a signed-in admin can manage books, categories and announcements
+// or read/update orders and messages.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null;
+    }
+
+    // Storefront content - anyone can read, only admin can write.
+    match /books/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /categories/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /announcements/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Orders - visitors may create their own; only admin can read/update/delete.
+    match /orders/{id} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Contact messages - visitors may create; only admin can read/manage.
+    match /messages/{id} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Everything else is closed by default.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

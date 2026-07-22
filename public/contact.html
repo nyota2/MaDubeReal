@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact | MaDube Books</title>
+<meta name="description" content="Contact MaDube Books for orders, bulk school pricing, partnerships and delivery.">
+<link rel="icon" href="assets/logo.jpg" type="image/jpeg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Caveat+Brush&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html">
+      <span class="brand-lockup">
+        <span class="logo-text">MaDube</span>
+        <img src="assets/logo.jpg" alt="MaDube Books logo">
+        <span class="logo-text books">Books</span>
+      </span>
+      <small>African Learning Resources</small>
+    </a>
+    <div class="nav-actions">
+      <button class="cart-btn" onclick="openDrawer()">Cart<span class="count cart-count">0</span></button>
+      <button class="burger" onclick="toggleNav()">☰</button>
+    </div>
+  </div>
+  <div class="navbar">
+    <div class="container">
+      <nav class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="about.html">About</a>
+      <a href="contact.html" class="active">Contact</a>
+    </nav>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero pattern-hero">
+  <div class="container">
+    <h1>Get in Touch</h1>
+    <p>Orders, bulk school pricing, partnerships &amp; delivery. We'd love to hear from you.</p>
+    <div class="breadcrumb"><a href="index.html">Home</a> / Contact</div>
+  </div>
+</section>
+<div class="pattern-band"></div>
+
+<section>
+  <div class="container split">
+    <div class="co-block">
+      <h3>Send us a message</h3>
+      <p class="co-note">Fill in the form and we'll get back to you as soon as we can.</p>
+      <form onsubmit="sendContactMessage(event)">
+        <div class="field-row">
+          <div class="field"><label>First name</label><input id="cName" required placeholder="Your name"></div>
+          <div class="field"><label>Phone / WhatsApp</label><input id="cPhone" required placeholder="+267 ..."></div>
+        </div>
+        <div class="field"><label>Email</label><input id="cEmail" type="email" required placeholder="you@example.com"></div>
+        <div class="field"><label>I'm interested in</label>
+          <select id="cInterest"><option>Buying books</option><option>Bulk / school order</option><option>Partnership</option><option>Other</option></select>
+        </div>
+        <div class="field"><label>Message</label><textarea id="cMessage" rows="4" placeholder="Tell us how we can help..."></textarea></div>
+        <button class="btn btn-primary btn-block" type="submit">Send message</button>
+      </form>
+    </div>
+    <div>
+      <div class="about-art">
+        <h3 style="font-size:1.3rem">Contact details</h3>
+        <p style="color:#e9dcc4;margin-top:10px">PO Box 402547, Gaborone, Botswana</p>
+        <p style="color:#e9dcc4">www.madubebooks.com</p>
+        <p style="color:#e9dcc4;margin-top:14px"><strong>Call / WhatsApp</strong></p>
+        <p style="color:#e9dcc4">+267 76 628 029</p>
+        <p style="color:#e9dcc4">+267 74 701 849</p>
+        <p style="color:#e9dcc4">+263 787 770 296</p>
+        <p style="color:#e9dcc4">+263 786 370 925</p>
+        <p style="color:#e9dcc4;margin-top:14px">zellamatootoo@gmail.com</p>
+      </div>
+      <div class="buy-card" style="margin-top:24px">
+        <h3>School &amp; bulk orders</h3>
+        <p>Print on demand from <strong>US$2.50 per copy</strong> for orders of 50+ copies. Get in touch for a tailored quote.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a class="brand" href="index.html">
+        <span class="brand-lockup">
+          <span class="logo-text">MaDube</span>
+          <img src="assets/logo.jpg" alt="MaDube Books logo" style="width:48px;height:48px">
+          <span class="logo-text books">Books</span>
+        </span>
+      </a>
+      <p style="margin-top:14px">Bringing African Heritage to Life through engaging Curriculum Enrichment Resources.</p>
+    </div>
+    <div><h4>Explore</h4><a href="index.html">Home</a><a href="shop.html">Shop</a><a href="about.html">About Us</a><a href="contact.html">Contact</a></div>
+    <div><h4>Our Books</h4><a href="shop.html">Early Readers</a><a href="shop.html">Bilingual Readers</a><a href="shop.html">Activity &amp; Busy Books</a><a href="shop.html">Colouring Books</a></div>
+    <div><h4>Get in touch</h4><p>PO Box 402547, Gaborone, Botswana</p><p>+267 76 628 029</p><p><a href="mailto:zellamatootoo@gmail.com">zellamatootoo@gmail.com</a></p></div>
+  </div>
+  <div class="footer-bottom">© 2025 MaDube Books (Pty) Ltd · Bringing African Heritage to Life · <a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms &amp; Conditions</a></div>
+</footer>
+
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<aside class="drawer" id="cartDrawer">
+  <div class="drawer-head"><h3>Your Basket</h3><button onclick="closeDrawer()">×</button></div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-foot">
+    <div class="row"><span>Total</span><span id="drawerTotal">US$0.00</span></div>
+    <a href="checkout.html" class="btn btn-primary btn-block">Checkout →</a>
+  </div>
+</aside>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/modules/utils.js"></script>
+<script src="js/catalogue.js"></script>
+<script src="js/main.js"></script>
+<script>
+function sendContactMessage(event){
+  event.preventDefault();
+  const g = id => (document.getElementById(id)?.value || '').trim();
+  const msg = {
+    name: g('cName'),
+    phone: g('cPhone'),
+    email: g('cEmail'),
+    interest: g('cInterest'),
+    subject: g('cInterest'),
+    message: g('cMessage'),
+    date: new Date().toISOString()
+  };
+  if(!msg.name || !msg.email){ toast('Please add your name and email.'); return; }
+  const done = () => { event.target.reset(); toast('Thanks! Your message has been sent.'); };
+  if(window.MaDube && MaDube.DB){
+    MaDube.DB.add('messages', msg).then(done).catch(err=>{ console.warn(err); done(); });
+  } else { done(); }
+}
+</script>
+</body>
+</html>

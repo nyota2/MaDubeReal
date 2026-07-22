@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Secrets - never commit these
+*.env
+.env
+.env.*
+serviceAccount*.json
+service-account*.json
+*-firebase-adminsdk-*.json
+*firebase-adminsdk*.json
+*.pem
+*.key
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log

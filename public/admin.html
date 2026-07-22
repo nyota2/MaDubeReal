@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <title>Admin Dashboard — MaDube Books</title>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="admn.css">
+  <link rel="icon" href="assets/logo.jpg" type="image/jpeg">
+</head>
+<body>
+
+  <!-- ========== TOAST CONTAINER ========== -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ========== LOGIN SCREEN ========== -->
+  <div class="admin-login" id="loginScreen">
+    <div class="login-card">
+      <div class="logo">
+        <img src="assets/logo.jpg" alt="MaDube Books — zebra reading a book" class="logo-icon">
+        <span>MaDube Books</span>
+      </div>
+      <h2>Admin Login</h2>
+      <p class="subtitle">Sign in to manage your bookstore</p>
+
+      <form id="loginForm" onsubmit="MaDube.Admin.login(event)">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="loginEmail" required placeholder="admin@madubebooks.com">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" required placeholder="Enter your password">
+        </div>
+        <div id="loginError" class="alert alert-error hidden"></div>
+        <button type="submit" class="btn btn-primary btn-lg">
+          Sign In
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========== EMAIL VERIFICATION CODE (shown after email+password) ========== -->
+  <div class="admin-login hidden" id="otpScreen">
+    <div class="login-card">
+      <div class="logo">
+        <img src="assets/logo.jpg" alt="MaDube Books — zebra reading a book" class="logo-icon">
+        <span>MaDube Books</span>
+      </div>
+      <h2>Check your email</h2>
+      <p class="subtitle">We sent a 6-digit verification code to <strong id="otpEmailTarget">your email</strong>. Enter it below to continue.</p>
+
+      <form onsubmit="MaDube.Admin.verifyOtp(event)">
+        <div class="form-group">
+          <label>6-Digit Code</label>
+          <input type="text" id="otpCode" required placeholder="123456"
+                 inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*">
+        </div>
+        <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;margin-bottom:0.5rem;cursor:pointer;">
+          <input type="checkbox" id="otpRemember" style="width:auto;"> Trust this device for 30 days
+        </label>
+        <p id="otpInfo" style="font-size:0.8rem;color:var(--gray-400);margin-bottom:0.5rem;"></p>
+        <div id="otpError" class="alert alert-error hidden"></div>
+        <button type="submit" class="btn btn-primary btn-lg">Verify &amp; continue</button>
+      </form>
+      <p style="text-align:center;margin-top:1.25rem;font-size:0.85rem;">
+        <a href="#" onclick="MaDube.Admin.resendCode(); return false;" style="color:var(--admin-accent,#3B5BDB);text-decoration:none;">Resend code</a>
+        &nbsp;·&nbsp;
+        <a href="#" onclick="MaDube.Admin.cancelOtp(); return false;" style="color:var(--gray-400);text-decoration:none;">← Back to login</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- ========== ADMIN DASHBOARD (hidden until logged in) ========== -->
+  <div class="admin-layout hidden" id="adminDashboard">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="logo">
+          <span>MaDube</span>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-group">
+          <p class="sidebar-nav-label">Main</p>
+          <a href="#" class="sidebar-link active" data-section="dashboard" onclick="MaDube.Admin.switchSection('dashboard', this)">
+            Dashboard
+          </a>
+        </div>
+
+        <div class="sidebar-nav-group">
+          <p class="sidebar-nav-label">Content</p>
+          <a href="#" class="sidebar-link" data-section="books" onclick="MaDube.Admin.switchSection('books', this)">
+            Books
+          </a>
+          <a href="#" class="sidebar-link" data-section="categories" onclick="MaDube.Admin.switchSection('categories', this)">
+            Categories
+          </a>
+          <a href="#" class="sidebar-link" data-section="announcements" onclick="MaDube.Admin.switchSection('announcements', this)">
+            Announcements
+          </a>
+        </div>
+
+        <div class="sidebar-nav-group">
+          <p class="sidebar-nav-label">Sales</p>
+          <a href="#" class="sidebar-link" data-section="orders" onclick="MaDube.Admin.switchSection('orders', this)">
+            Orders
+          </a>
+          <a href="#" class="sidebar-link" data-section="analytics" onclick="MaDube.Admin.switchSection('analytics', this)">
+            Analytics
+          </a>
+          <a href="#" class="sidebar-link" data-section="messages" onclick="MaDube.Admin.switchSection('messages', this)">
+            Messages
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="admin-user">
+          <div class="admin-avatar">A</div>
+          <div class="admin-user-info">
+            <div class="name" id="adminName">Admin</div>
+            <div class="role">Administrator</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <!-- Top Bar -->
+      <div class="admin-topbar">
+        <div class="topbar-left">
+          <button class="sidebar-toggle" id="sidebarToggle" onclick="MaDube.Admin.toggleSidebar()">☰</button>
+          <div class="topbar-title">
+            <h2 id="sectionTitle">Dashboard</h2>
+            <p id="sectionSubtitle">Welcome back! Here's your overview.</p>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <a href="index.html" class="btn btn-sm btn-outline">View Site</a>
+          <button class="btn btn-sm btn-secondary" onclick="MaDube.Admin.logout()">Logout</button>
+        </div>
+      </div>
+
+      <div class="admin-content">
+
+        <!-- ===== DASHBOARD SECTION ===== -->
+        <div class="admin-section active" id="section-dashboard">
+          <!-- Stats -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-info">
+                <h3 id="totalBooks">0</h3>
+                <p>Total Books</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-info">
+                <h3 id="totalOrders">0</h3>
+                <p>Total Orders</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-info">
+                <h3 id="totalRevenue">$0</h3>
+                <p>Total Revenue</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-info">
+                <h3 id="totalVisitors">0</h3>
+                <p>Total Visitors</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="admin-panel">
+            <div class="panel-header">
+              <h3>Quick Actions</h3>
+            </div>
+            <div class="panel-body">
+              <div class="quick-actions">
+                <div class="quick-action-card" onclick="MaDube.Admin.switchSection('books'); MaDube.Admin.showBookForm();">
+                  <p>Add New Book</p>
+                </div>
+                <div class="quick-action-card" onclick="MaDube.Admin.switchSection('categories')">
+                  <p>Manage Categories</p>
+                </div>
+                <div class="quick-action-card" onclick="MaDube.Admin.switchSection('orders')">
+                  <p>View Orders</p>
+                </div>
+                <div class="quick-action-card" onclick="MaDube.Admin.switchSection('announcements')">
+                  <p>Post Announcement</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Orders -->
+          <div class="admin-panel">
+            <div class="panel-header">
+              <h3>Recent Orders</h3>
+              <a href="#" class="btn btn-sm btn-outline" onclick="MaDube.Admin.switchSection('orders')">View All</a>
+            </div>
+            <div class="panel-body">
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Order ID</th>
+                      <th>Customer</th>
+                      <th>Book</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recentOrdersTable">
+                    <tr>
+                      <td colspan="6" class="text-center" style="padding: 2rem;">
+                        <p class="text-light">No orders yet</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== BOOKS SECTION ===== -->
+        <div class="admin-section" id="section-books">
+          <!-- Books List Panel -->
+          <div class="admin-panel" id="booksListPanel">
+            <div class="panel-header">
+              <h3>All Books</h3>
+              <button class="btn btn-sm btn-primary" onclick="MaDube.Admin.showBookForm()">+ Add New Book</button>
+            </div>
+            <div class="panel-body">
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Cover</th>
+                      <th>Title</th>
+                      <th>Age Group</th>
+                      <th>Price</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="booksTable">
+                    <tr>
+                      <td colspan="6" class="text-center" style="padding: 2rem;">
+                        <div class="spinner" style="margin: 0 auto;"></div>
+                        <p class="mt-md text-light">Loading books...</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add/Edit Book Form Panel -->
+          <div class="admin-panel hidden" id="bookFormPanel">
+            <div class="panel-header">
+              <h3 id="bookFormTitle">Add New Book</h3>
+              <button class="btn btn-sm btn-outline" onclick="MaDube.Admin.hideBookForm()">← Back to List</button>
+            </div>
+            <div class="panel-body">
+              <form id="bookForm" onsubmit="MaDube.Admin.saveBook(event)">
+                <input type="hidden" id="editBookId" value="">
+                <div class="book-form">
+                  <div class="form-group">
+                    <label>Book Title *</label>
+                    <input type="text" id="bookTitleInput" required placeholder="Enter book title">
+                  </div>
+                  <div class="form-group">
+                    <label>Author</label>
+                    <input type="text" id="bookAuthorInput" placeholder="Author name">
+                  </div>
+                  <div class="form-group">
+                    <label>Age Group *</label>
+                    <select id="bookAgeGroup" required>
+                      <option value="">Select age group</option>
+                      <option value="0-3">Ages 0–3</option>
+                      <option value="4-6">Ages 4–6</option>
+                      <option value="7-9">Ages 7–9</option>
+                      <option value="10-12">Ages 10–12</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Category</label>
+                    <select id="bookCategorySelect">
+                      <option value="">Select category</option>
+                      <!-- Populated dynamically -->
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Price (USD) *</label>
+                    <input type="number" id="bookPriceInput" step="0.01" min="0" required placeholder="0.00">
+                  </div>
+                  <div class="form-group">
+                    <label>Status</label>
+                    <select id="bookStatus">
+                      <option value="published">Published</option>
+                      <option value="draft">Draft</option>
+                    </select>
+                  </div>
+                  <div class="form-group full-width">
+                    <label>Summary *</label>
+                    <textarea id="bookSummaryInput" required placeholder="Write a short summary of the book..."></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label>Cover Image</label>
+                    <div class="file-upload" onclick="document.getElementById('coverImageFile').click()">
+                      <p>Click to upload cover image</p>
+                      <p style="font-size: 0.75rem; color: var(--text-light);">JPG, PNG, WebP (max 5MB)</p>
+                      <input type="file" id="coverImageFile" accept="image/*" onchange="MaDube.Admin.previewFile(this, 'coverPreview')">
+                    </div>
+                    <div class="file-preview hidden" id="coverPreview"></div>
+                  </div>
+                  <div class="form-group">
+                    <label>PDF File</label>
+                    <div class="file-upload" onclick="document.getElementById('pdfFile').click()">
+                      <p>Click to upload PDF book</p>
+                      <p style="font-size: 0.75rem; color: var(--text-light);">PDF format only (max 50MB)</p>
+                      <input type="file" id="pdfFile" accept=".pdf" onchange="MaDube.Admin.previewFile(this, 'pdfPreview')">
+                    </div>
+                    <div class="file-preview hidden" id="pdfPreview"></div>
+                  </div>
+                </div>
+
+                <div style="margin-top: var(--space-xl); display: flex; gap: var(--space-md); justify-content: flex-end;">
+                  <button type="button" class="btn btn-outline" onclick="MaDube.Admin.hideBookForm()">Cancel</button>
+                  <button type="submit" class="btn btn-primary" id="saveBookBtn">Save Book</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== CATEGORIES SECTION ===== -->
+        <div class="admin-section" id="section-categories">
+          <div class="admin-panel">
+            <div class="panel-header">
+              <h3>Categories & Age Groups</h3>
+            </div>
+            <div class="panel-body">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl);">
+                <!-- Add / Edit Category -->
+                <div>
+                  <h4 class="mb-md" id="categoryFormTitle">Add Category</h4>
+                  <form onsubmit="MaDube.Admin.addCategory(event)" id="categoryForm">
+                    <input type="hidden" id="editCategoryId" value="">
+                    <div class="form-group">
+                      <label>Category Name</label>
+                      <input type="text" id="newCategoryName" required placeholder="e.g., Adventure Stories">
+                    </div>
+                    <div class="form-group">
+                      <label>Description</label>
+                      <input type="text" id="newCategoryDesc" placeholder="Brief description">
+                    </div>
+                    <div class="form-group">
+                      <label>Icon (emoji)</label>
+                      <input type="text" id="newCategoryIcon" placeholder="e.g., 🚀 📖 🧙" maxlength="4">
+                    </div>
+                    <div class="form-group">
+                      <label>Color</label>
+                      <input type="color" id="newCategoryColor" value="#7EC8E3" style="height:38px;padding:4px;cursor:pointer;">
+                    </div>
+                    <div style="display:flex;gap:var(--space-sm);">
+                      <button type="submit" class="btn btn-primary btn-sm" id="saveCategoryBtn">+ Add Category</button>
+                      <button type="button" class="btn btn-outline btn-sm hidden" id="cancelEditCategoryBtn" onclick="MaDube.Admin.cancelEditCategory()">Cancel</button>
+                    </div>
+                  </form>
+                </div>
+
+                <!-- Category List -->
+                <div>
+                  <h4 class="mb-md">Existing Categories</h4>
+                  <div id="categoriesList">
+                    <p class="text-light">Loading categories...</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== ANNOUNCEMENTS SECTION ===== -->
+        <div class="admin-section" id="section-announcements">
+          <div class="admin-panel">
+            <div class="panel-header">
+              <h3>Announcements</h3>
+            </div>
+            <div class="panel-body">
+              <form onsubmit="MaDube.Admin.postAnnouncement(event)">
+                <div class="form-group">
+                  <label>Announcement Title</label>
+                  <input type="text" id="announcementTitle" required placeholder="e.g., New books arriving this week!">
+                </div>
+                <div class="form-group">
+                  <label>Message</label>
+                  <textarea id="announcementMessage" required placeholder="Write your announcement..."></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Display on Homepage</label>
+                  <select id="announcementActive">
+                    <option value="true">Yes - Show on homepage</option>
+                    <option value="false">No - Save as draft</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Post Announcement</button>
+              </form>
+
+              <hr style="margin: var(--space-xl) 0; border: none; border-top: 1px solid var(--light-gray);">
+
+              <h4 class="mb-md">Previous Announcements</h4>
+              <div id="announcementsList">
+                <p class="text-light">Loading announcements...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== ORDERS SECTION ===== -->
+        <div class="admin-section" id="section-orders">
+          <div class="admin-panel">
+            <div class="panel-header">
+              <h3>Orders</h3>
+            </div>
+            <div class="panel-body">
+              <div class="order-status-bar">
+                <button class="tag active" onclick="MaDube.Admin.filterOrders('all', this)">All</button>
+                <button class="tag" onclick="MaDube.Admin.filterOrders('paid', this)">Paid</button>
+                <button class="tag" onclick="MaDube.Admin.filterOrders('pending', this)">Pending</button>
+                <button class="tag" onclick="MaDube.Admin.filterOrders('cancelled', this)">Cancelled</button>
+              </div>
+
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Order ID</th>
+                      <th>Customer</th>
+                      <th>Email</th>
+                      <th>Book</th>
+                      <th>Amount</th>
+                      <th>Method</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ordersTable">
+                    <tr>
+                      <td colspan="9" class="text-center" style="padding: 2rem;">
+                        <p class="text-light">No orders found</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sales Summary -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-info">
+                <h3 id="salesTotal">$0</h3>
+                <p>Total Sales</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-info">
+                <h3 id="ordersPaid">0</h3>
+                <p>Paid Orders</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-info">
+                <h3 id="ordersPending">0</h3>
+                <p>Pending Orders</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-info">
+                <h3 id="bestSeller">—</h3>
+                <p>Best Seller</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== ANALYTICS SECTION ===== -->
+        <div class="admin-section" id="section-analytics">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-info">
+                <h3 id="analyticsVisitors">0</h3>
+                <p>Total Visitors</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-info">
+                <h3 id="analyticsMobile">0%</h3>
+                <p>Mobile Users</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-info">
+                <h3 id="analyticsDesktop">0%</h3>
+                <p>Desktop Users</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-info">
+                <h3 id="analyticsMostViewed">—</h3>
+                <p>Most Viewed Book</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-panel">
+            <div class="panel-header">
+              <h3>Popular Books</h3>
+            </div>
+            <div class="panel-body">
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Book Title</th>
+                      <th>Views</th>
+                      <th>Purchases</th>
+                      <th>Revenue</th>
+                    </tr>
+                  </thead>
+                  <tbody id="popularBooksTable">
+                    <tr>
+                      <td colspan="4" class="text-center" style="padding: 2rem;">
+                        <p class="text-light">No data available yet</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-panel">
+            <div class="panel-header">
+              <h3>Device Breakdown</h3>
+            </div>
+            <div class="panel-body">
+              <div class="chart-placeholder">
+                <p>Analytics charts will appear here as data is collected.</p>
+                <p style="font-size: 0.8rem; margin-top: var(--space-sm);">Device types, visitor trends, and popular books are tracked automatically.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== MESSAGES SECTION ===== -->
+        <div class="admin-section" id="section-messages">
+          <div class="admin-panel">
+            <div class="panel-header">
+              <h3>Contact Messages</h3>
+              <span class="badge" id="messagesCount">0</span>
+            </div>
+            <div class="panel-body">
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Subject</th>
+                      <th>Message</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="messagesTable">
+                    <tr>
+                      <td colspan="6" class="text-center" style="padding: 2rem;">
+                        <p class="text-light">No messages yet</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ========== DELETE CONFIRMATION MODAL ========== -->
+  <div class="modal-backdrop" id="deleteModal">
+    <div class="modal" style="max-width: 400px;">
+      <div class="modal-header">
+        <h3>Confirm Delete</h3>
+        <button class="modal-close" onclick="MaDube.Admin.closeDeleteModal()">&times;</button>
+      </div>
+      <p id="deleteMessage">Are you sure you want to delete this item? This action cannot be undone.</p>
+      <div style="display: flex; gap: var(--space-md); justify-content: flex-end; margin-top: var(--space-xl);">
+        <button class="btn btn-outline" onclick="MaDube.Admin.closeDeleteModal()">Cancel</button>
+        <button class="btn btn-secondary" id="confirmDeleteBtn" onclick="MaDube.Admin.confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+
+  <script src="js/firebase-config.js"></script>
+  <script src="js/modules/utils.js"></script>
+  <script src="js/catalogue.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

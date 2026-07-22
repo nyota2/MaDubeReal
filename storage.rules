@@ -1,0 +1,33 @@
+rules_version = '2';
+
+// MaDube Books - Cloud Storage rules
+// Book covers and PDFs are world-readable (they appear on the public
+// storefront); only a signed-in admin may upload or delete them.
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAdmin() {
+      return request.auth != null;
+    }
+
+    // Cover images: public read, admin write, capped at 5 MB and images only.
+    match /covers/{file=**} {
+      allow read: if true;
+      allow write: if isAdmin()
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // Book PDFs: public read, admin write, capped at 50 MB.
+    match /pdfs/{file=**} {
+      allow read: if true;
+      allow write: if isAdmin()
+        && request.resource.size < 50 * 1024 * 1024;
+    }
+
+    // Everything else is closed.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
