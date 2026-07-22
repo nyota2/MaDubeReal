@@ -282,6 +282,33 @@ function trackVisit(){
   }catch(e){}
 }
 
+/* ---- Cookie / storage notice ----
+   The site only uses essential local storage (your basket) and loads
+   fonts from Google. This banner tells visitors that once, then stays
+   dismissed. Choice is remembered in local storage, not a cookie. */
+const COOKIE_KEY = 'madube_cookie_ok';
+function initCookieNotice(){
+  try{ if(localStorage.getItem(COOKIE_KEY)) return; }catch(e){ return; }
+  const bar = document.createElement('div');
+  bar.className = 'cookie-notice';
+  bar.setAttribute('role', 'dialog');
+  bar.setAttribute('aria-label', 'Cookie and storage notice');
+  bar.innerHTML =
+    '<p>We use essential local storage to remember the items in your basket, '
+    + 'and load fonts from Google. We do not use advertising or tracking cookies. '
+    + 'See our <a href="privacy.html">Privacy Policy</a>.</p>'
+    + '<div class="cookie-actions">'
+    + '<button class="btn btn-primary" type="button">Got it</button>'
+    + '</div>';
+  bar.querySelector('button').addEventListener('click', ()=>{
+    try{ localStorage.setItem(COOKIE_KEY, '1'); }catch(e){}
+    bar.classList.remove('show');
+    setTimeout(()=>bar.remove(), 400);
+  });
+  document.body.appendChild(bar);
+  requestAnimationFrame(()=>bar.classList.add('show'));
+}
+
 document.addEventListener('DOMContentLoaded', ()=>{
   injectNavCart();
   renderProducts();
@@ -292,4 +319,5 @@ document.addEventListener('DOMContentLoaded', ()=>{
   if(typeof initCheckout === 'function') initCheckout();
   trackVisit();
   loadCatalogue();
+  initCookieNotice();
 });
